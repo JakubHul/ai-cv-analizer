@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ATS CV Analyzer — Results Dashboard</title>
+  <link rel="stylesheet" href="/static/css/app.css?v=2" />
+</head>
+<body data-analysis-id="{{ analysis_id }}">
+<div class="page-wrapper">
+
+  <!-- ── Header ─────────────────────────────────────────────── -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon">
+          <!-- Lucide: zap -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <span class="logo-text">ATS <span>CV Analyzer</span></span>
+      </a>
+      <nav class="header-nav">
+        <a href="/" class="nav-link">
+          <!-- Lucide: arrow-left -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="19" y1="12" x2="5" y2="12"/>
+            <polyline points="12 19 5 12 12 5"/>
+          </svg>
+          New Analysis
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ── Main ───────────────────────────────────────────────── -->
+  <main class="shell results-shell">
+
+    <!-- Topbar -->
+    <section class="card topbar">
+      <div class="topbar-brand">
+        <div class="logo-icon" style="width:40px;height:40px;">
+          <!-- Lucide: bar-chart-2 -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="20" x2="18" y2="10"/>
+            <line x1="12" y1="20" x2="12" y2="4"/>
+            <line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+        </div>
+        <div>
+          <h1>ATS Matching Dashboard</h1>
+          <p>Deterministic score · Explainable skill gap analysis</p>
+        </div>
+      </div>
+      <a class="button-link" href="/">
+        <!-- Lucide: plus -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="12" y1="5" x2="12" y2="19"/>
+          <line x1="5" y1="12" x2="19" y2="12"/>
+        </svg>
+        Analyze another CV
+      </a>
+    </section>
+
+    <!-- Score Card -->
+    <section class="card score-card">
+      <!-- Animated SVG circle -->
+      <div class="score-circle-wrap">
+        <div class="score-circle" id="scoreCircle">
+          <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%"   stop-color="#67e8f9"/>
+                <stop offset="100%" stop-color="#8b5cf6"/>
+              </linearGradient>
+            </defs>
+            <circle class="track" cx="100" cy="100" r="90"/>
+            <circle class="fill"  cx="100" cy="100" r="90"/>
+          </svg>
+          <div class="score-inner">
+            <span id="scoreValue">0</span>
+            <span class="score-pct">%</span>
+          </div>
+        </div>
+        <span class="score-label" id="scoreLabel">—</span>
+      </div>
+
+      <!-- Score meta -->
+      <div class="score-meta">
+        <h2>Match Score</h2>
+        <p id="summaryText" class="muted">Loading analysis…</p>
+
+        <div class="metric">
+          <div class="metric-header">
+            <span class="metric-label">
+              <!-- Lucide: check-circle -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <polyline points="22 4 12 14.01 9 11.01"/>
+              </svg>
+              Matched skills
+            </span>
+            <span class="metric-count" id="matchedCount">—</span>
+          </div>
+          <div class="bar good"><span id="matchedBar"></span></div>
+        </div>
+
+        <div class="metric">
+          <div class="metric-header">
+            <span class="metric-label">
+              <!-- Lucide: x-circle -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="15" y1="9" x2="9" y2="15"/>
+                <line x1="9" y1="9" x2="15" y2="15"/>
+              </svg>
+              Missing skills
+            </span>
+            <span class="metric-count" id="missingCount">—</span>
+          </div>
+          <div class="bar bad"><span id="missingBar"></span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills Grid -->
+    <section class="grid-2">
+      <article class="card">
+        <div class="skill-card-header">
+          <div class="skill-card-icon good">
+            <!-- Lucide: check-circle-2 -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/>
+              <path d="m9 12 2 2 4-4"/>
+            </svg>
+          </div>
+          <h3>Matched Skills</h3>
+        </div>
+        <div id="matchedSkills" class="chip-grid"></div>
+      </article>
+
+      <article class="card">
+        <div class="skill-card-header">
+          <div class="skill-card-icon bad">
+            <!-- Lucide: alert-circle -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <line x1="12" y1="8" x2="12" y2="12"/>
+              <line x1="12" y1="16" x2="12.01" y2="16"/>
+            </svg>
+          </div>
+          <h3>Missing Skills</h3>
+        </div>
+        <div id="missingSkills" class="chip-grid"></div>
+      </article>
+    </section>
+
+    <!-- Recommendations + Strengths -->
+    <section class="grid-2">
+      <article class="card">
+        <div class="list-card-header">
+          <div class="list-card-icon violet">
+            <!-- Lucide: lightbulb -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="9" y1="18" x2="15" y2="18"/>
+              <line x1="10" y1="22" x2="14" y2="22"/>
+              <path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>
+            </svg>
+          </div>
+          <h3>Recommendations</h3>
+        </div>
+        <ul id="recommendationsList" class="list"></ul>
+      </article>
+
+      <article class="card">
+        <div class="list-card-header">
+          <div class="list-card-icon amber">
+            <!-- Lucide: star -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+          </div>
+          <h3>Strengths</h3>
+        </div>
+        <ul id="strengthsList" class="list"></ul>
+      </article>
+    </section>
+
+    <!-- AI Explainability Panel -->
+    <section class="card">
+      <div class="explain-header">
+        <div class="explain-icon">
+          <!-- Lucide: cpu -->
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+               stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="4" width="16" height="16" rx="2" ry="2"/>
+            <rect x="9" y="9" width="6" height="6"/>
+            <line x1="9" y1="1" x2="9" y2="4"/>
+            <line x1="15" y1="1" x2="15" y2="4"/>
+            <line x1="9" y1="20" x2="9" y2="23"/>
+            <line x1="15" y1="20" x2="15" y2="23"/>
+            <line x1="20" y1="9" x2="23" y2="9"/>
+            <line x1="20" y1="14" x2="23" y2="14"/>
+            <line x1="1" y1="9" x2="4" y2="9"/>
+            <line x1="1" y1="14" x2="4" y2="14"/>
+          </svg>
+        </div>
+        <h3>AI Explainability Panel</h3>
+      </div>
+      <div id="explanations" class="explanations"></div>
+    </section>
+
+  </main>
+
+  <!-- ── Footer ─────────────────────────────────────────────── -->
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">
+        Built by <strong>&nbsp;Jakub Hul&nbsp;</strong> · ATS CV Analyzer · &copy; 2026
+      </div>
+      <div class="footer-badge">
+        <!-- Lucide: shield -->
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"
+             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        Score is deterministic · AI does not compute score
+      </div>
+    </div>
+  </footer>
+
+</div><!-- .page-wrapper -->
+
+<script src="/static/js/results.js?v=3"></script>
+</body>
+</html>
