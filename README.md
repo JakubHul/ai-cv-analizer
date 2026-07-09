@@ -24,7 +24,7 @@ The dashboard provides a complete overview of the ATS analysis, including the de
 
 | Top Section | Bottom Section |
 |:-----------:|:--------------:|
-| ![](docs/screenshots/cv_analizer1.png) | ![](docs/screenshots/cv_analizer2.png) |
+| ![](docs/screenshots/cv_analizer1.PNG) | ![](docs/screenshots/cv_analizer2.PNG) |
 
 ### Analysis Results
 
@@ -32,7 +32,7 @@ The results page displays the detailed ATS evaluation, highlighting candidate st
 
 | Top Section | Bottom Section |
 |:-----------:|:--------------:|
-| ![](docs/screenshots/cv_analizer3.png) | ![](docs/screenshots/cv_analizer4.png) |
+| ![](docs/screenshots/cv_analizer3.PNG) | ![](docs/screenshots/cv_analizer4.PNG) |
 
 ---
 
