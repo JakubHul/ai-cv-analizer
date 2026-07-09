@@ -4,261 +4,309 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.115-009688?logo=fastapi&logoColor=white)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Scoring](https://img.shields.io/badge/Scoring-Deterministic-blueviolet)
-![AI](https://img.shields.io/badge/AI-Local%20%28Ollama%29-orange)
+![AI](https://img.shields.io/badge/AI-Local%20(Ollama)-orange)
 
-An ATS-style CV matching system that compares a candidate's PDF resume against a job description using **deterministic scoring** and **local AI explainability**. Built as a production-style portfolio project demonstrating clean layered architecture, local LLM integration, and a modern SaaS dashboard UI.
-
----
-
-## Features
-
-- 📄 **PDF CV upload** with drag-and-drop support
-- 🎯 **Deterministic ATS scoring** — fully reproducible, no randomness
-- 🌍 **Polish/English normalization** — handles bilingual CVs and job descriptions
-- 🤖 **Local AI explainability** via Ollama (llama3) — explains missing skills, generates recommendations and strengths
-- 💾 **SQLite persistence** — every analysis is stored and retrievable by ID
-- 📊 **SaaS-style dashboard** — animated score circle, skill chips, glassmorphism UI
-- 🔍 **Health check endpoint** — reports database and Ollama availability
+ATS-style CV Analyzer built with **FastAPI**, **deterministic skill matching**, and **local AI explainability**. The application compares a candidate's PDF resume against a job description, calculates a fully reproducible ATS score, and generates AI-powered feedback using a locally hosted language model.
 
 ---
 
-## Architecture
+# 🎥 Demo
+
+<p align="center">
+<img src="docs/demo.gif" width="900">
+</p>
+
+# 📸 Screenshots
+
+### ATS Dashboard
+
+The dashboard provides a complete overview of the ATS analysis, including the deterministic match score, matched and missing skills, AI-generated recommendations, and explainability.
+
+| Top Section | Bottom Section |
+|:-----------:|:--------------:|
+| ![](docs/screenshots/cv_analizer1.png) | ![](docs/screenshots/cv_analizer2.png) |
+
+### Analysis Results
+
+The results page displays the detailed ATS evaluation, highlighting candidate strengths, missing competencies, and actionable recommendations.
+
+| Top Section | Bottom Section |
+|:-----------:|:--------------:|
+| ![](docs/screenshots/cv_analizer3.png) | ![](docs/screenshots/cv_analizer4.png) |
+
+---
+
+# ✨ Highlights
+
+- 📄 Upload CVs in PDF format
+- 🎯 Deterministic ATS scoring (AI never calculates the score)
+- 🌍 Polish and English language normalization
+- 🤖 Local AI explainability using Ollama (llama3)
+- 💾 SQLite persistence for every analysis
+- 📊 Modern SaaS-inspired dashboard
+- 🏗️ Clean layered architecture
+- ⚡ FastAPI REST API
+
+---
+
+# ✅ Project Status
+
+| Feature | Status |
+|----------|:------:|
+| PDF Parsing | ✅ |
+| ATS Skill Matching | ✅ |
+| Deterministic Scoring | ✅ |
+| Local AI Explainability | ✅ |
+| SQLite Persistence | ✅ |
+| REST API | ✅ |
+| Responsive Dashboard | ✅ |
+
+---
+
+# 💡 Why this project?
+
+Many ATS portfolio projects rely entirely on LLM-generated scores.
+
+This project intentionally separates **business logic** from **AI capabilities**.
+
+- The ATS score is always calculated deterministically.
+- AI never influences numerical results.
+- Ollama is used only for explainability, recommendations, and natural-language summaries.
+- The same CV and Job Description always produce the same score.
+
+This architecture keeps the scoring transparent, reproducible, and easy to validate.
+
+---
+
+# 🏗️ Architecture
 
 ```
 app/
-├── main.py                      # App bootstrap, middleware, route registration
+├── main.py
 ├── core/
-│   ├── config.py                # Settings (env vars with defaults)
-│   ├── constants.py             # Canonical skill list + synonym map
-│   ├── database.py              # SQLite init and connection factory
-│   └── errors.py                # Domain exception hierarchy
-├── db/                          # SQLite database directory (created on first run)
+│   ├── config.py
+│   ├── constants.py
+│   ├── database.py
+│   └── errors.py
+├── db/
 ├── models/
-│   ├── api.py                   # Pydantic request/response schemas
-│   ├── db.py                    # Database record dataclasses
-│   └── domain.py                # Service-layer dataclasses
 ├── repositories/
-│   └── analysis_repository.py  # Persistence CRUD for analyses
 ├── routes/
-│   ├── health.py                # GET /health
-│   ├── analysis.py              # POST /analyze
-│   └── results.py               # GET /results/{id}
 ├── services/
-│   ├── analysis_service.py      # Orchestration pipeline
-│   ├── pdf_parser.py            # Robust PDF text extraction
-│   ├── skill_extractor.py       # Deterministic + AI skill extraction
-│   ├── translator.py            # PL/EN skill normalization
-│   ├── matcher.py               # Deterministic ATS matching logic
-│   └── explainer.py             # Ollama explainability layer
+│   ├── analysis_service.py
+│   ├── matcher.py
+│   ├── pdf_parser.py
+│   ├── skill_extractor.py
+│   ├── translator.py
+│   └── explainer.py
 └── ui/
-    ├── templates/
-    │   ├── index.html           # Upload page
-    │   └── results.html         # Analysis dashboard
-    └── static/
-        ├── css/app.css
-        └── js/
-            ├── upload.js
-            └── results.js
 ```
 
-**Scoring formula:**
+The project follows a clean layered architecture:
 
 ```
-score = round((matched_skills / required_skills) * 100)
+Routes
+      ↓
+Services
+      ↓
+Repositories
+      ↓
+SQLite
 ```
 
-The score is computed deterministically from skill intersection — the AI model is **never** involved in scoring.
+Business logic remains separated from API endpoints.
 
 ---
 
-## Tech Stack
+# 🎯 Deterministic Scoring
+
+```
+score = round(
+    matched_skills
+    ----------------
+    required_skills
+    × 100
+)
+```
+
+The ATS score is calculated **without any AI involvement**.
+
+AI is responsible only for:
+
+- explainability
+- recommendations
+- strengths summary
+
+---
+
+# ⚙️ Tech Stack
 
 | Layer | Technology |
-|---|---|
-| Backend framework | FastAPI |
-| ASGI server | Uvicorn |
-| PDF parsing | PyPDF2 |
-| Data validation | Pydantic |
-| Templating | Jinja2 |
-| Database | SQLite (stdlib) |
-| Local AI | Ollama (llama3) |
-| Frontend | Vanilla JS, CSS (glassmorphism) |
-| Form handling | python-multipart |
+|--------|------------|
+| Backend | FastAPI |
+| Validation | Pydantic |
+| Database | SQLite |
+| PDF Parsing | PyPDF2 |
+| AI | Ollama (llama3) |
+| Templates | Jinja2 |
+| Frontend | HTML, CSS, JavaScript |
+| Server | Uvicorn |
 
 ---
 
-## Installation
+# 🚀 Installation
 
-**Prerequisites:**
+### Requirements
+
 - Python 3.11+
-- [Ollama](https://ollama.com/) installed and running
+- Ollama installed
+
+Clone repository
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/jakubhul/ai-cv-analizer.git
 cd ai-cv-analizer
+```
 
-# 2. Create and activate virtual environment
+Create virtual environment
+
+```bash
 python -m venv .venv
+```
 
-# Windows
+Windows
+
+```bash
 .venv\Scripts\activate
+```
 
-# macOS / Linux
+Linux / macOS
+
+```bash
 source .venv/bin/activate
+```
 
-# 3. Install dependencies
+Install dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
-# 4. Copy environment file
-cp .env.example .env   # macOS/Linux
-copy .env.example .env  # Windows
+Copy environment variables
 
-# 5. Pull the local AI model
+```bash
+copy .env.example .env
+```
+
+Download the model
+
+```bash
 ollama pull llama3
 ```
 
 ---
 
-## Running Locally
+# ▶️ Run Application
 
-**Terminal 1 — start Ollama:**
+Terminal 1
+
 ```bash
 ollama run llama3
 ```
 
-**Terminal 2 — start the app:**
+Terminal 2
+
 ```bash
 uvicorn app.main:app --reload
 ```
 
-Open in browser: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+Open:
 
----
-
-## API Endpoints
-
-### `GET /health`
-Returns the health status of the application, database, and Ollama availability.
-
-**Response:**
-```json
-{
-  "status": "ok",
-  "database": "ok",
-  "ollama": "ok"
-}
+```
+http://127.0.0.1:8000
 ```
 
 ---
 
-### `POST /analyze`
-Analyzes a CV PDF against a job description.
+# 🌐 REST API
 
-**Request:** `multipart/form-data`
-
-| Field | Type | Required |
-|---|---|---|
-| `cv_file` | PDF file | ✅ |
-| `job_description` | string | ✅ |
-| `job_title` | string | ❌ |
-| `company` | string | ❌ |
-
-**Response:**
-```json
-{
-  "analysis_id": "uuid",
-  "score": 75,
-  "matched_skills": ["Python", "Docker", "FastAPI"],
-  "missing_skills": ["Kubernetes", "AWS"],
-  "missing_skill_explanations": [
-    { "skill": "Kubernetes", "reason": "Required in 8/10 similar job descriptions" }
-  ],
-  "strengths": ["Strong Python backend experience"],
-  "summary": "Candidate has strong alignment with core backend requirements...",
-  "recommendations": ["Learn Kubernetes basics", "Get AWS certification"],
-  "created_at": "2026-01-15T10:30:00Z"
-}
-```
+| Endpoint | Description |
+|----------|-------------|
+| GET /health | Application health status |
+| POST /analyze | Analyze CV against Job Description |
+| GET /results/{id} | Retrieve saved analysis |
+| GET /dashboard/{id} | Render dashboard |
 
 ---
 
-### `GET /results/{analysis_id}`
-Retrieves a previously stored analysis by ID.
+# 🧪 Tests
 
-**Response:** Same schema as `/analyze`.
-
----
-
-### `GET /dashboard/{analysis_id}`
-Renders the visual results dashboard for a given analysis ID.
-
----
-
-## Screenshots
-
-> Screenshots can be added to a `docs/screenshots/` directory after running the app locally.
-
-| Upload Page | Results Dashboard |
-|---|---|
-| Upload form with drag-and-drop PDF support | Animated score circle, matched/missing skill chips, AI explanations |
-
----
-
-## Environment Variables
-
-All variables are optional — sensible defaults are provided for local development.
-
-| Variable | Default | Description |
-|---|---|---|
-| `DATABASE_PATH` | `app/db/cv_analyzer.db` | Path to SQLite database file |
-| `OLLAMA_URL` | `http://localhost:11434/api/generate` | Ollama API endpoint |
-| `OLLAMA_MODEL` | `llama3` | Ollama model name |
-
----
-
-## Running Tests
-
-The test suite validates the full skill extraction → normalization → matching pipeline across four CV profiles (Software Developer, Construction Worker, Mechanic, Warehouse Worker).
+Run:
 
 ```bash
-python -m pytest tests/ -v -s
+pytest tests -v
+```
+
+The test suite verifies:
+
+- deterministic matching
+- language normalization
+- synonym resolution
+- multiple job domains
+- scoring consistency
+
+---
+
+# ⚙️ Environment Variables
+
+| Variable | Default |
+|----------|---------|
+| DATABASE_PATH | app/db/cv_analyzer.db |
+| OLLAMA_URL | http://localhost:11434/api/generate |
+| OLLAMA_MODEL | llama3 |
+
+---
+
+# 🔧 Troubleshooting
+
+### Ollama not found
+
+```bash
+ollama --version
 ```
 
 ---
 
-## Troubleshooting
+### Download model
 
-**`ollama` command not found**
-Restart your terminal after installation, then verify with `ollama --version`.
-
-**Model not available**
 ```bash
 ollama pull llama3
+```
+
+---
+
+### Run model
+
+```bash
 ollama run llama3
 ```
 
-**App reports "local model unavailable"**
-Ensure Ollama is running in a separate terminal. Test with:
-```bash
-curl http://localhost:11434
-```
+---
 
-**PDF upload fails**
-Ensure the file is a valid, text-based PDF (not a scanned image). Scanned PDFs without OCR are not supported.
+### PDF cannot be parsed
+
+Only text-based PDFs are supported.
 
 ---
 
-## Future Improvements
+# 🚀 Future Improvements
 
-- [ ] Support for DOCX and plain-text CV formats
-- [ ] Analysis history page listing all past results
-- [ ] Export results as PDF report
-- [ ] Docker Compose setup for one-command startup
-- [ ] Expand canonical skill list with additional domain-specific categories
+- Docker deployment
+- DOCX support
+- Export analysis as PDF
 
 ---
 
-## License
+# 📄 License
 
-This project is licensed under the [MIT License](LICENSE).
+Released under the MIT License.
